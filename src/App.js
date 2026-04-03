@@ -1,21 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
+
+// ── MUSIK-OPTIONEN ────────────────────────────────────────────────
+const MUSIC_OPTS = [
+  { key:"none",  label:"Kein Ton",  icon:"🔇" },
+  { key:"music", label:"Musik",     icon:"🎵" },
+  { key:"quran", label:"Quran",     icon:"🕌" },
+];
 
 const SECRET_CODE = "GOETHE2024";    // normaler User – Sperren aktiv
 const ADMIN_CODE  = "ADMIN9999";     // Admin / Lehrer – alles offen
-const STORE_KEY = "goethe_v4";
-
-// ── MUSIC CONFIG ─────────────────────────────────────────────────
-// We use Web Audio API to generate ambient tones (no external URLs needed)
-// Users can choose: Musik (lofi ambient) or Quran (peaceful tone)
-const MUSIC_OPTS = [
-  { key:"none",  label:"Kein Ton",   icon:"🔇", desc:"Stille" },
-  { key:"music", label:"Musik",      icon:"🎵", desc:"Ruhige Lernmusik" },
-  { key:"quran", label:"Quran",      icon:"🕌", desc:"Ruhige Quran-Rezitation" },
-];
-
-// ── CELEBRATION PARTICLES ─────────────────────────────────────────
-const CONFETTI_COLORS = ["#f59e0b","#10b981","#3b82f6","#ec4899","#8b5cf6","#ef4444","#fbbf24"];
-
+const STORE_KEY = "goethe_v3";
 const load = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } };
 const save = (d) => { try { localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch {} };
 
@@ -53,8 +47,8 @@ const Icon = ({ name, size = 20, color = "currentColor" }) => {
 
 // ── THEME ──────────────────────────────────────────────────────
 const T = {
-  light: { bg:"#f0f4f8", card:"#fff", border:"#e2e8f0", text:"#1a202c", sub:"#64748b", muted:"#94a3b8", input:"#f8fafc", inputB:"#cbd5e1", nav:"#fff", shadow:"0 2px 12px rgba(0,0,0,0.08)", code:"#f1f5f9" },
-  dark:  { bg:"#0f172a", card:"#1e293b", border:"#334155", text:"#f1f5f9", sub:"#94a3b8", muted:"#64748b", input:"#0f172a", inputB:"#475569", nav:"#1e293b", shadow:"0 2px 12px rgba(0,0,0,0.4)", code:"#0f172a" },
+  light: { bg:"#f0f4ff", card:"#ffffff", border:"#e0e7ff", text:"#1e1b4b", sub:"#5b5ea6", muted:"#a5b4fc", input:"#f5f3ff", inputB:"#c7d2fe", nav:"#ffffff", shadow:"0 4px 24px rgba(79,70,229,0.10)", code:"#eef2ff" },
+  dark:  { bg:"#0d0d1a", card:"#161628", border:"#2d2d5e", text:"#e8e8ff", sub:"#8888cc", muted:"#4444aa", input:"#0d0d1a", inputB:"#3d3d7a", nav:"#161628", shadow:"0 4px 24px rgba(0,0,0,0.5)", code:"#0d0d1a" },
 };
 
 const LC = { A1:"#10b981", A2:"#3b82f6", B1:"#f59e0b", B2:"#8b5cf6", C1:"#ef4444" };
@@ -361,68 +355,70 @@ const EXAM_STRUCT = {
       },
     ],
   },
+
   A2:{
     name: "Goethe-Zertifikat A2",
-    intro:"Die Prüfung bestätigt grundlegende Deutschkenntnisse (Niveau A2 des GeR). Für Erwachsene ab 16 Jahren. Nicht modular – alle Teile müssen zusammen abgelegt werden.",
+    intro:"Die Prüfung bestätigt grundlegende Deutschkenntnisse (Niveau A2 des GeR). Für Erwachsene ab 16 Jahren. Nicht modular – alle Teile müssen zusammen abgelegt werden. Max. 100 Punkte insgesamt.",
     modular: false,
-    totalTime: "ca. 75 Min. schriftlich + 15 Min. mündlich",
-    passingRule: "Mindestens 60 von 100 Punkten (60%) – mindestens 45 Punkte schriftlich, mindestens 15 Punkte mündlich.",
+    totalTime: "Lesen 30 Min. · Hören 30 Min. · Schreiben 30 Min. · Sprechen 15 Min.",
+    passingRule: "Mindestens 60 von 100 Punkten (60%) gesamt. Schriftlich: mind. 45/75 Punkte. Sprechen: mind. 15/25 Punkte. Jeder Teil: max. 25 Punkte.",
     pdfUrl: "https://www.goethe.de/pro/relaunch/prf/materialien/A2/A2_Uebungssatz_Erwachsene.pdf",
     parts:[
       {
-        name:"Hören",
-        icon:"video",
-        dur:"ca. 25 Min.",
-        pts:25,
-        tasks:[
-          {n:"Teil 1", desc:"Sie hören kurze Alltagsgespräche. 6 Aufgaben: richtige Lösung ankreuzen (a, b oder c). Zweimal gespielt."},
-          {n:"Teil 2", desc:"Sie hören ein längeres Gespräch oder Interview. 4 Aufgaben: Richtig oder Falsch."},
-          {n:"Teil 3", desc:"Sie hören öffentliche Durchsagen oder Ansagen. 5 Aufgaben: Richtig oder Falsch. Einmal gespielt."},
-          {n:"Teil 4", desc:"Sie hören ein Radio-Interview. 5 Aufgaben: Richtig oder Falsch."},
-        ],
-        tip:"Nutzen Sie die Vorlesezeit, um die Aufgaben zu lesen. So wissen Sie, worauf Sie achten müssen.",
-      },
-      {
         name:"Lesen",
         icon:"book",
-        dur:"ca. 30 Min.",
+        dur:"30 Min.",
         pts:25,
         tasks:[
-          {n:"Teil 1", desc:"Sie lesen einen kurzen Zeitungsartikel oder Bericht. 6 Aufgaben: Richtig oder Falsch."},
-          {n:"Teil 2", desc:"Sie lesen Anzeigen oder kurze Texte und ordnen zu. 5 Aufgaben."},
-          {n:"Teil 3", desc:"Sie lesen kurze Alltagstexte (E-Mails, Aushänge) und beantworten Fragen. 4 Aufgaben."},
-          {n:"Teil 4", desc:"Sie lesen Texte mit Lücken und wählen das richtige Wort. 5 Aufgaben (Wortschatz/Grammatik)."},
+          {n:"Teil 1", desc:"Informationen und Argumentationen in Medientexten verstehen: Einen Zeitungsartikel lesen. 5 Aufgaben: Mehrfachauswahl (a, b oder c)."},
+          {n:"Teil 2", desc:"Informationstafeln, Veranstaltungsprogramme etc. verstehen: Auf einer Messe/Veranstaltung richtige Halle/Ort finden. 5 Aufgaben: Mehrfachauswahl (a, b oder c)."},
+          {n:"Teil 3", desc:"Korrespondenz verstehen: Eine E-Mail oder Nachricht lesen und Fragen dazu beantworten. 5 Aufgaben: Mehrfachauswahl (a, b oder c)."},
+          {n:"Teil 4", desc:"Anzeigen verstehen: 6 Personen suchen etwas – welche Anzeige (A–J) passt? 5 Aufgaben: Zuordnung. Eine Anzeige passt nicht."},
         ],
-        tip:"Bei Lückentexten: Lesen Sie den ganzen Satz, bevor Sie eine Option wählen.",
+        tip:"Alle 4 Teile = 20 Messpunkte × 1,25 = 25 Punkte. Überfliegen Sie zuerst die Fragen, dann suchen Sie die Antworten im Text gezielt.",
+      },
+      {
+        name:"Hören",
+        icon:"video",
+        dur:"30 Min.",
+        pts:25,
+        tasks:[
+          {n:"Teil 1", desc:"Informationen im Radio, auf dem Anrufbeantworter, bei Durchsagen verstehen. 5 Aufgaben: Mehrfachauswahl (a, b oder c). Einmal gespielt."},
+          {n:"Teil 2", desc:"Ein zusammenhängendes Gespräch verstehen. 5 Aufgaben: Zuordnung Bild/Text. Zweimal gespielt."},
+          {n:"Teil 3", desc:"Einzelgespräche verstehen. 5 Aufgaben: Mehrfachauswahl Bild/Text. Zweimal gespielt."},
+          {n:"Teil 4", desc:"Ein Radiointerview verstehen. 5 Aufgaben: Richtig oder Falsch. Zweimal gespielt."},
+        ],
+        tip:"Lesen Sie zuerst die Aufgaben, bevor der Text gespielt wird. So wissen Sie, worauf Sie achten müssen.",
       },
       {
         name:"Schreiben",
         icon:"pencil",
-        dur:"ca. 20 Min.",
+        dur:"30 Min.",
         pts:25,
         tasks:[
-          {n:"Teil 1", desc:"Sie füllen ein Formular oder eine Tabelle mit persönlichen Informationen aus."},
-          {n:"Teil 2", desc:"Sie schreiben eine kurze Nachricht oder E-Mail (ca. 30 Wörter) zu einer alltäglichen Situation."},
+          {n:"Teil 1", desc:"Interaktion – Persönliche Mitteilung zur Kontaktpflege: Eine E-Mail oder Nachricht an eine Person schreiben (ca. 30 Wörter). Alle Inhaltspunkte bearbeiten."},
+          {n:"Teil 2", desc:"Interaktion – Halboffizielle Mitteilung zur Handlungsregulierung: Z.B. Entschuldigung oder Anfrage schreiben (ca. 30 Wörter). Anrede und Gruß nicht vergessen."},
         ],
-        tip:"Verwenden Sie einfache, klare Sätze. Beantworten Sie alle Punkte der Aufgabenstellung.",
+        tip:"Achten Sie auf vollständige Sätze und alle Inhaltspunkte. Anrede ('Liebe/r...') und Gruß ('Viele Grüße') nicht vergessen!",
       },
       {
         name:"Sprechen",
         icon:"info",
-        dur:"ca. 15 Min.",
+        dur:"15 Min. pro 2 Teilnehmende",
         pts:25,
         tasks:[
-          {n:"Teil 1", desc:"Sie stellen sich vor (Beruf, Familie, Wohnort, Hobbys etc.)."},
-          {n:"Teil 2", desc:"Sie erfragen und geben Informationen zu einem alltäglichen Thema (mit Bildkarten)."},
-          {n:"Teil 3", desc:"Sie planen gemeinsam mit einem Partner eine Aktivität."},
+          {n:"Teil 1", desc:"Interaktion: Informationen zur Person mit einem Partner austauschen. Sie stellen sich gegenseitig Fragen (Name, Beruf, Wohnort, Hobbys usw.)."},
+          {n:"Teil 2", desc:"Produktion: Dem Prüfenden ausführlich nähere Informationen zum eigenen Leben geben. Monologisches Sprechen über sich selbst."},
+          {n:"Teil 3", desc:"Interaktion: Mit einem Partner eine Unternehmung planen und aushandeln. Gemeinsam eine Aktivität besprechen und sich einigen."},
         ],
-        tip:"Reagieren Sie aktiv auf Ihren Partner. Stellen Sie Rückfragen und zeigen Sie Interesse.",
+        tip:"Sprechen Sie deutlich. Reagieren Sie aktiv auf Ihren Partner und stellen Sie Rückfragen. Fehler sind erlaubt – es geht um Kommunikation!",
       },
     ],
   },
-  B1:{
+
+  B1: {
     name: "Goethe-Zertifikat B1",
-    intro:"Die Prüfung bestätigt selbstständige Sprachverwendung (Niveau B1 des GeR). Modular aufgebaut ab B1 – die vier Module können einzeln oder zusammen abgelegt werden.",
+    intro:"Die Prüfung bestätigt selbstständige Sprachverwendung (Niveau B1 des GeR). Modular aufgebaut – die vier Module können einzeln oder zusammen abgelegt werden. Max. 100 Punkte pro Modul.",
     modular: true,
     totalTime: "Lesen 65 Min. · Hören 40 Min. · Schreiben 60 Min. · Sprechen 15 Min.",
     passingRule: "Jedes Modul: mindestens 60 von 100 Punkten (60%). Module können separat wiederholt werden.",
@@ -434,13 +430,13 @@ const EXAM_STRUCT = {
         dur:"65 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie lesen einen längeren Text (z.B. Tagebucheintrag, Erfahrungsbericht). 6 Aufgaben: Richtig oder Falsch."},
-          {n:"Teil 2", desc:"Sie lesen Anzeigen oder Kleinanzeigen und ordnen Personen passenden Texten zu. 5 Aufgaben."},
-          {n:"Teil 3", desc:"Sie lesen einen Zeitungsartikel mit Lücken und wählen das passende Wort (Grammatik/Wortschatz). 10 Aufgaben."},
-          {n:"Teil 4", desc:"Sie lesen Alltagstexte (Schilder, kurze Mitteilungen) und beantworten Fragen. 5 Aufgaben."},
-          {n:"Teil 5", desc:"Sie lesen einen Text mit Lücken und ergänzen das fehlende Wort (ohne Auswahlmöglichkeit). 5 Aufgaben."},
+          {n:"Teil 1", desc:"Korrespondenz lesen: Einen längeren Text (z.B. Tagebucheintrag, Blog-Eintrag) lesen. 6 Aufgaben: Richtig oder Falsch."},
+          {n:"Teil 2", desc:"Information und Argumentation verstehen: Zwei Presseartikel zu einem Thema lesen. 6 Aufgaben: Mehrfachauswahl (a, b oder c)."},
+          {n:"Teil 3", desc:"Zur Orientierung lesen: Mehrere Personen suchen etwas – welche Anzeige (A–J) passt? 7 Aufgaben: Zuordnung. Eine Anzeige passt nicht."},
+          {n:"Teil 4", desc:"Information und Argumentation verstehen: Kurze Alltagstexte (Schilder, Aushänge, kurze Mitteilungen) lesen. 7 Aufgaben: Ja oder Nein."},
+          {n:"Teil 5", desc:"Schriftliche Anweisung verstehen: Einen Text (z.B. Studienordnung mit Paragrafen) lesen und Überschriften aus dem Inhaltsverzeichnis zuordnen. 4 Aufgaben: Zuordnung."},
         ],
-        tip:"Beginnen Sie mit den Aufgaben, die Sie sicher beherrschen. Planen Sie Zeit für jeden Teil ein.",
+        tip:"Beginnen Sie mit Teil 4 (kurze Texte, schnelle Punkte). Dann Teil 3 (Zuordnung). Teil 2 erfordert genaues Lesen – planen Sie dafür Zeit.",
       },
       {
         name:"Hören",
@@ -448,12 +444,12 @@ const EXAM_STRUCT = {
         dur:"40 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie hören ein Radio-Interview oder eine Diskussion. 6 Aufgaben: Richtig oder Falsch. Zweimal gespielt."},
-          {n:"Teil 2", desc:"Sie hören Alltagsgespräche. 5 Aufgaben: Richtige Antwort ankreuzen (a, b oder c)."},
-          {n:"Teil 3", desc:"Sie hören eine längere Präsentation oder einen Vortrag. 5 Aufgaben: Richtig oder Falsch. NUR EINMAL gespielt!"},
-          {n:"Teil 4", desc:"Sie hören Durchsagen oder Nachrichten. 5 Aufgaben: Richtig oder Falsch. NUR EINMAL gespielt!"},
+          {n:"Teil 1", desc:"Ankündigungen, Durchsagen und Anweisungen verstehen: Kurze Alltags-Hördialoge. 10 Aufgaben (je 2 pro Dialog): Richtig/Falsch und Mehrfachauswahl (a/b/c). Einmal gespielt."},
+          {n:"Teil 2", desc:"Als Zuschauer/Zuhörer im Publikum verstehen: Ein Radio-Interview oder Gespräch. 5 Aufgaben: Mehrfachauswahl (a, b oder c). Zweimal gespielt."},
+          {n:"Teil 3", desc:"Gespräche zwischen Muttersprachlern verstehen: Ein Gespräch mit mehreren Personen. 7 Aufgaben: Richtig oder Falsch. Einmal gespielt. ACHTUNG: NUR EINMAL!"},
+          {n:"Teil 4", desc:"Radiosendungen und Tonaufnahmen verstehen: Ein Vortrag oder Radiosendung. 8 Aufgaben: Zuordnung – welche Person sagt was? Zweimal gespielt."},
         ],
-        tip:"ACHTUNG: Teile 3 und 4 werden nur EINMAL gespielt! Konzentrieren Sie sich und machen Sie Notizen.",
+        tip:"ACHTUNG: Teil 3 wird nur EINMAL gespielt! Konzentrieren Sie sich besonders und machen Sie Notizen während des ersten Hörens.",
       },
       {
         name:"Schreiben",
@@ -461,30 +457,31 @@ const EXAM_STRUCT = {
         dur:"60 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie schreiben eine E-Mail oder einen Brief (ca. 80 Wörter) zu einem alltäglichen Thema. Alle Punkte der Aufgabenstellung müssen bearbeitet werden."},
-          {n:"Teil 2", desc:"Sie schreiben eine Stellungnahme oder Meinungsäußerung (ca. 80 Wörter) zu einem vorgegebenen Thema."},
+          {n:"Teil 1", desc:"Interaktion – Persönliche Mitteilung zur Kontaktpflege: Eine E-Mail oder einen Brief schreiben (ca. 80 Wörter). Alle vorgegebenen Inhaltspunkte bearbeiten."},
+          {n:"Teil 2", desc:"Produktion – Persönliche Meinung zu einem Thema äußern: Einen Forumsbeitrag oder Kommentar schreiben (ca. 80 Wörter). Eigene Meinung begründet darlegen."},
+          {n:"Teil 3", desc:"Interaktion – Persönliche Mitteilung zur Handlungsregulierung: Z.B. Entschuldigung, Bitte oder Anfrage schreiben (ca. 40 Wörter)."},
         ],
-        tip:"Planen Sie 5 Minuten für die Struktur: Einleitung – Hauptteil – Schluss. Zählen Sie die Wörter.",
+        tip:"Planen Sie 5 Minuten für die Struktur: Einleitung – Hauptteil – Schluss. Bearbeiten Sie alle Inhaltspunkte der Aufgabenstellung.",
       },
       {
         name:"Sprechen",
         icon:"info",
-        dur:"15 Min.",
+        dur:"15 Min. pro 2 Teilnehmende",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie halten eine kurze Präsentation (ca. 2 Min.) zu einem vorgegebenen Thema mit Stichwörtern."},
-          {n:"Teil 2", desc:"Sie geben Feedback zur Präsentation Ihres Partners und äußern Ihre Meinung."},
-          {n:"Teil 3", desc:"Sie planen gemeinsam eine Aktivität und einigen sich auf eine Lösung."},
+          {n:"Teil 1", desc:"Interaktion – Gemeinsam etwas planen und aushandeln: Mit dem Partner eine Aktivität (z.B. Krankenbesuch, Geburtstagsfeier) planen. 4 vorgegebene Leitpunkte beachten."},
+          {n:"Teil 2", desc:"Produktion – In einem Monolog ein Thema präsentieren: Eine kurze Präsentation zu 5 vorgegebenen Folien/Stichpunkten halten (ca. 2 Min.). Einleitung, Hauptteil, Schluss."},
+          {n:"Teil 3", desc:"Interaktion – Situationsadäquat reagieren: Dem Partner Feedback zur Präsentation geben. Reagieren auf Feedback und gegenseitig je eine Frage stellen."},
         ],
-        tip:"Benutzen Sie Redemittel: 'Meiner Meinung nach...', 'Ich bin dafür/dagegen, weil...', 'Einerseits...andererseits...'",
+        tip:"Lerne die 5-Folien-Struktur für Teil 2 auswendig: Einleitung → Hauptpunkte → Vor-/Nachteile → eigene Meinung → Schluss. Nutze Redemittel wie 'Meiner Meinung nach...'",
       },
     ],
   },
   B2:{
     name: "Goethe-Zertifikat B2",
-    intro:"Die Prüfung belegt fortgeschrittene Deutschkenntnisse (Niveau B2 des GeR). Modular aufgebaut – die vier Module können einzeln oder in Kombination abgelegt werden.",
+    intro:"Die Prüfung belegt fortgeschrittene Deutschkenntnisse (Niveau B2 des GeR). Modular aufgebaut – die vier Module können einzeln oder in Kombination abgelegt werden. Max. 100 Punkte pro Modul.",
     modular: true,
-    totalTime: "Lesen 65 Min. · Hören 40 Min. · Schreiben 75 Min. · Sprechen 15 Min.",
+    totalTime: "Lesen 65 Min. · Hören 40 Min. · Schreiben 75 Min. · Sprechen ca. 15 Min.",
     passingRule: "Jedes Modul: mindestens 60 von 100 Punkten (60%). Module können separat wiederholt werden.",
     pdfUrl: "https://www.goethe.de/pro/relaunch/prf/materialien/B2/b2_modellsatz_erwachsene.pdf",
     parts:[
@@ -494,72 +491,13 @@ const EXAM_STRUCT = {
         dur:"65 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie lesen einen längeren Sachtext und beantworten Fragen zum Gesamtverständnis und zu Details. 8 Aufgaben (Richtig/Falsch/Nicht im Text)."},
-          {n:"Teil 2", desc:"Sie lesen mehrere kurze Texte und ordnen Aussagen den Texten zu. 5 Aufgaben."},
-          {n:"Teil 3", desc:"Sie lesen einen Text mit Lücken und ergänzen fehlende Sätze oder Satzteile aus einer Auswahl. 5 Aufgaben."},
-          {n:"Teil 4", desc:"Sie lesen einen Text mit Lücken und wählen das passende Wort (Lexik/Grammatik). 10 Aufgaben."},
-          {n:"Teil 5", desc:"Sie lesen Kurzinformationen und beantworten konkrete Fragen dazu. 5 Aufgaben."},
+          {n:"Teil 1", desc:"Einstellungen/Haltungen verstehen: In einem Forum lesen, wie 4 Personen über ein Thema denken. 9 Aufgaben: Zuordnung – welche Aussage passt zu welcher Person? Personen können mehrmals gewählt werden."},
+          {n:"Teil 2", desc:"Informationen verstehen: Einen Zeitschriftenartikel mit Lücken lesen. 6 Sätze fehlen – welcher Satz (a–h) passt in welche Lücke? 2 Sätze passen nicht."},
+          {n:"Teil 3", desc:"Informationen verstehen: Einen Zeitungsartikel lesen und Fragen dazu beantworten. 6 Aufgaben: Mehrfachauswahl (a, b oder c)."},
+          {n:"Teil 4", desc:"Standpunkte verstehen: Meinungsäußerungen zu einem Lebensmodell lesen. 6 Aufgaben: Welche Äußerung passt zu welcher Überschrift? Eine Äußerung passt nicht."},
+          {n:"Teil 5", desc:"Regeln/Instruktionen verstehen: Einen offiziellen Text (z.B. Studienordnung mit Paragrafen) lesen. 3 Aufgaben: Welche Überschrift aus dem Inhaltsverzeichnis passt zu welchem Paragraf?"},
         ],
-        tip:"Achten Sie auf implizite Bedeutungen und Schlüsselwörter. Beim Typ 'Nicht im Text': Achtung – die Aussage muss explizit im Text stehen.",
-      },
-      {
-        name:"Hören",
-        icon:"video",
-        dur:"40 Min.",
-        pts:100,
-        tasks:[
-          {n:"Teil 1", desc:"Sie hören ein Interview oder Gespräch. 8 Aufgaben: Richtig/Falsch/Nicht erwähnt. Zweimal gespielt."},
-          {n:"Teil 2", desc:"Sie hören einen Vortrag oder Bericht. 5 Aufgaben: Richtig oder Falsch. NUR EINMAL gespielt!"},
-          {n:"Teil 3", desc:"Sie hören ein Gespräch mit mehreren Personen. 5 Aufgaben: Welche Person sagt was? Zweimal gespielt."},
-          {n:"Teil 4", desc:"Sie hören kurze Aussagen und ordnen sie Themen zu. 5 Aufgaben. Zweimal gespielt."},
-        ],
-        tip:"Teil 2 wird nur EINMAL gespielt! Lesen Sie die Aufgaben vorher genau und notieren Sie Schlüsselwörter.",
-      },
-      {
-        name:"Schreiben",
-        icon:"pencil",
-        dur:"75 Min.",
-        pts:100,
-        tasks:[
-          {n:"Teil 1", desc:"Sie schreiben eine Erörterung oder Stellungnahme (ca. 150 Wörter) zu einem gesellschaftlichen Thema. Argumente für und gegen eine Position darstellen."},
-          {n:"Teil 2", desc:"Sie schreiben einen formellen Brief oder eine formelle E-Mail (ca. 100 Wörter) – z.B. eine Beschwerde, Anfrage oder Bewerbung."},
-        ],
-        tip:"Verwenden Sie Konnektoren: 'Darüber hinaus', 'Im Gegensatz dazu', 'Infolgedessen'. Formeller Brief: korrekte Anrede und Grußformel!",
-      },
-      {
-        name:"Sprechen",
-        icon:"info",
-        dur:"ca. 15 Min.",
-        pts:100,
-        tasks:[
-          {n:"Teil 1", desc:"Sie halten eine strukturierte Präsentation (ca. 3 Min.) zu einem Thema mit grafischer Darstellung. Einleitung – Beschreibung der Grafik – Fazit."},
-          {n:"Teil 2", desc:"Sie diskutieren mit Ihrem Partner über ein kontroVerses Thema und verhandeln eine gemeinsame Lösung."},
-        ],
-        tip:"Strukturieren Sie Ihre Präsentation klar: 'Zunächst möchte ich... Dann werde ich... Abschließend...' Reagieren Sie auf Gegenargumente.",
-      },
-    ],
-  },
-  C1:{
-    name: "Goethe-Zertifikat C1 (modular, ab Januar 2024)",
-    intro:"Die Prüfung beweist kompetente Sprachbeherrschung (Niveau C1 des GeR). Seit Januar 2024 vollständig modular. Jedes der vier Module kann einzeln abgelegt werden.",
-    modular: true,
-    totalTime: "Lesen 70 Min. · Hören 40 Min. · Schreiben 80 Min. · Sprechen 15 Min.",
-    passingRule: "Jedes Modul: mindestens 60 von 100 Punkten (60%). Module können zu verschiedenen Zeitpunkten (innerhalb von 365 Tagen) abgelegt werden.",
-    pdfUrl: "https://www.goethe.de/pro/relaunch/prf/materialien/C1_modular/c1-modular_modellsatz.pdf",
-    parts:[
-      {
-        name:"Lesen",
-        icon:"book",
-        dur:"70 Min.",
-        pts:100,
-        tasks:[
-          {n:"Teil 1", desc:"Sie lesen einen längeren Sachtext (ca. 600–800 Wörter). 7 Aufgaben: Richtig/Falsch/Nicht im Text. Globalverstehen und Detailverständnis."},
-          {n:"Teil 2", desc:"Sie lesen mehrere Kurztexte zu einem Thema und ordnen Aussagen zu. 5 Aufgaben. Selektives Lesen."},
-          {n:"Teil 3", desc:"Sie lesen einen Text mit 8 Lücken (+ Beispiel). Wählen Sie aus vier Optionen das passende Wort (Lexik/Strukturen). 8 Aufgaben."},
-          {n:"Teil 4", desc:"Sie lesen einen Text, in dem Sätze/Abschnitte fehlen. Wählen Sie den passenden Satzteil aus einer Liste. 6 Aufgaben. Textkohärenz."},
-          {n:"Teil 5", desc:"Sie lesen kurze Informationstexte (z.B. Programmhinweise, Ankündigungen). 5 Aufgaben: Welcher Text passt?"},
-        ],
-        tip:"Achten Sie auf Ironie, Modalpartikeln und Nominalstil. Beim Lückentextformat: Lesen Sie immer den ganzen Satz mit Kontext.",
+        tip:"Beginnen Sie mit Teil 3 (klare Fragen). Dann Teil 2 (Lückentext: Kontext vor und nach der Lücke beachten!). Teil 4: Achten Sie auf Stichworte in den Überschriften.",
       },
       {
         name:"Hören",
@@ -567,38 +505,97 @@ const EXAM_STRUCT = {
         dur:"ca. 40 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie hören einen Vortrag oder eine Präsentation (ca. 5 Min.). 8 Aufgaben: Richtig/Falsch/Nicht erwähnt. Zweimal gespielt."},
-          {n:"Teil 2", desc:"Sie hören ein komplexes Gespräch oder Diskussion. 5 Aufgaben: Richtig oder Falsch. NUR EINMAL gespielt!"},
-          {n:"Teil 3", desc:"Sie hören Interviews mit mehreren Personen zu einem Thema. 5 Aufgaben: Welche Person sagt was? Zweimal gespielt."},
-          {n:"Teil 4", desc:"Sie hören kurze Äußerungen und beantworten Aufgaben dazu. 10 Aufgaben. Zweimal gespielt."},
+          {n:"Teil 1", desc:"Alltagsgespräche verstehen: 5 kurze Gespräche/Äußerungen. Je 2 Aufgaben pro Text (10 Aufgaben total): Richtig/Falsch und Mehrfachauswahl (a/b/c). Einmal gespielt."},
+          {n:"Teil 2", desc:"Aussagen und Informationen verstehen: Ein Radio-Interview. 6 Aufgaben: Mehrfachauswahl (a, b oder c). Zweimal gespielt."},
+          {n:"Teil 3", desc:"Einstellungen und Meinungen verstehen: Ein Radiogespräch mit mehreren Personen. 6 Aufgaben: Wer sagt das? (Zuordnung zur Person). Einmal gespielt. ACHTUNG: NUR EINMAL!"},
+          {n:"Teil 4", desc:"Vorträge verstehen: Ein kurzer Vortrag. 8 Aufgaben: Mehrfachauswahl (a, b oder c). Zweimal gespielt."},
         ],
-        tip:"Teil 2 wird nur EINMAL gespielt! Akademisches und fachsprachliches Vokabular auf C1-Niveau ist typisch.",
+        tip:"ACHTUNG: Teil 3 wird nur EINMAL gespielt! Lesen Sie vorher alle Aufgaben und notieren Sie Schlüsselwörter. Bei Teil 1: Konzentrieren Sie sich auf jeden Text einzeln.",
       },
       {
         name:"Schreiben",
         icon:"pencil",
-        dur:"80 Min.",
+        dur:"75 Min.",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie schreiben eine kritische Stellungnahme (ca. 230 Wörter) zu einem gesellschaftlichen oder wissenschaftlichen Thema. Komplexe Argumentation erforderlich."},
-          {n:"Teil 2", desc:"Sie schreiben eine Zusammenfassung oder einen formellen Text (ca. 120 Wörter) auf Basis von Quellmaterial."},
+          {n:"Teil 1", desc:"Produktion – Meinungsäußerung verfassen: Einen Forumsbeitrag (ca. 150 Wörter) zu einem gesellschaftlichen Thema schreiben. 4 Inhaltspunkte bearbeiten (z.B. Meinung äußern, Gründe nennen, Alternativen vorschlagen, Vorteile erläutern). Empfohlene Zeit: 50 Min."},
+          {n:"Teil 2", desc:"Interaktion – Persönliche Mitteilung verfassen: Eine Nachricht (ca. 100 Wörter) an eine bekannte Person oder Vorgesetzten schreiben. 4 Inhaltspunkte bearbeiten. Anrede und Gruß nicht vergessen. Empfohlene Zeit: 25 Min."},
         ],
-        tip:"Verwenden Sie Nominalstil, Passiv und C1-Konnektoren: 'Wohingegen', 'Angesichts', 'Infolgedessen'. Strukturieren Sie mit: 'Im Folgenden wird... – Zusammenfassend lässt sich sagen...'",
+        tip:"Teil 1: Strukturieren Sie mit Einleitung–Hauptteil–Schluss. Verwenden Sie Konnektoren: 'Darüber hinaus', 'Im Gegensatz dazu'. Teil 2: Höflicher Ton, korrekte Anrede ('Sehr geehrter Herr...').",
       },
       {
         name:"Sprechen",
         icon:"info",
-        dur:"ca. 15 Min.",
+        dur:"ca. 15 Min. pro Paar (+ 15 Min. Vorbereitung)",
         pts:100,
         tasks:[
-          {n:"Teil 1", desc:"Sie halten ein Impulsreferat (4–5 Min.) auf Basis eines Impulstexts. Keine Vorbereitungszeit – spontane Reaktion auf den Text."},
-          {n:"Teil 2", desc:"Sie diskutieren mit Ihrem Partner über ein komplexes, abstraktes Thema. Argumentieren, Hypothesen aufstellen, auf Gegenargumente eingehen."},
+          {n:"Teil 1", desc:"Produktion – Vor Publikum sprechen: In einem Seminar einen kurzen Vortrag (ca. 4 Min.) halten. Thema aus 2 Optionen wählen. Einleitung–Hauptteil–Schluss strukturieren. Partner stellen danach Fragen."},
+          {n:"Teil 2", desc:"Interaktion – Standpunkte vertreten: In einem Debattierclub eine kontroverse Frage diskutieren (ca. 5 Min.). Eigene Position argumentieren, auf Gegenargumente reagieren und am Ende zusammenfassen (dafür oder dagegen?)."},
         ],
-        tip:"Konjunktiv I für indirekte Rede zeigen! Abstrakte Argumentation: 'Das ließe sich dadurch erklären, dass...' / 'Es wäre denkbar, dass...'",
+        tip:"Teil 1: 15 Min. Vorbereitung nutzen – Notizen machen! Einleitung: 'Ich möchte heute über... sprechen.' Teil 2: Redemittel: 'Ich bin der Meinung, dass...' / 'Einerseits... andererseits...'",
+      },
+    ],
+  },
+C1:{
+    name: "Goethe-Zertifikat C1",
+    intro:"Die Prüfung bestätigt kompetente Sprachverwendung (Niveau C1 des GeR). Modular aufgebaut seit 01.01.2024 – die vier Module können einzeln oder zusammen abgelegt werden. Max. 100 Punkte pro Modul.",
+    modular: true,
+    totalTime: "Lesen 65 Min. · Hören ca. 40 Min. · Schreiben 75 Min. · Sprechen ca. 20 Min. pro Paar",
+    passingRule: "Jedes Modul: mindestens 60 von 100 Punkten (60%). Module können separat wiederholt werden.",
+    pdfUrl: "https://www.goethe.de/pro/relaunch/prf/materialien/C1_modular/c1-modular_modellsatz.pdf",
+    parts:[
+            {
+              name:"Lesen",
+              icon:"book",
+              dur:"65 Min.",
+              pts:100,
+              tasks:[
+          {n:"Teil 1", desc:"Text mit Wörtern rekonstruieren: Einen populärwissenschaftlichen Artikel lesen. 8 Aufgaben: Lückentext mit Multiple-Choice (4-gliedrig) – das richtige Wort aus 4 Optionen wählen."},
+          {n:"Teil 2", desc:"Hauptaussagen und Einzelinformationen verstehen: Einen Zeitschriftenartikel mit hohem Informationsgehalt lesen. 7 Aufgaben: Multiple-Choice (3-gliedrig)."},
+          {n:"Teil 3", desc:"Text mit Sätzen rekonstruieren: Einen Kommentar oder eine Reportage lesen. 8 Lücken – aus 8 vorgegebenen Sätzen den richtigen zuordnen. Keine Sätze übrig."},
+          {n:"Teil 4", desc:"Meinung oder Aussage suchen, erkennen und verorten: Mehrere (populär-)wissenschaftliche Beiträge lesen. 7 Aufgaben: Zuordnung von 5 Aussagen zu den Texten (Aussagen können mehrfach verwendet werden)."},
+        ],
+        tip:"Teil 1 (10 Min.): Kontext vor und nach der Lücke lesen – grammatische Logik entscheidet. Teil 3 (20 Min.): Lesen Sie den ganzen Absatz vor und nach der Lücke, um den logischen Zusammenhang zu finden.",
+      },
+      {
+        name:"Hören",
+        icon:"video",
+        dur:"ca. 40 Min.",
+        pts:100,
+        tasks:[
+          {n:"Teil 1", desc:"Einzelinformationen in einer Sendung verstehen: Einen Podcast (Rezension) hören. 6 Aufgaben: Zuordnung von Aussagen zu Textabschnitten. Zweimal gespielt."},
+          {n:"Teil 2", desc:"Aussagen und Einzelinformationen zu Fachthemen verstehen: Ein Interview mit einem Experten hören. 9 Aufgaben: Multiple-Choice (3-gliedrig). Zweimal gespielt."},
+          {n:"Teil 3", desc:"Hauptaussagen und Meinungen in einer Diskussion verstehen: Eine Radiodiskussion mit 3 Personen hören. 8 Aufgaben: Multiple-Choice (3-gliedrig). Zweimal gespielt."},
+          {n:"Teil 4", desc:"Einzelinformationen zu einem aktuellen Thema verstehen: Einen Vortrag hören. 7 Aufgaben: Multiple-Choice (3-gliedrig). Zweimal gespielt."},
+        ],
+        tip:"Bei allen Teilen: Lesen Sie zuerst die Aufgaben (nutzen Sie die Vorbereitungszeit!). Markieren Sie beim ersten Hören Ihre Antworten und überprüfen Sie beim zweiten Hören.",
+      },
+      {
+        name:"Schreiben",
+        icon:"pencil",
+        dur:"75 Min.",
+        pts:100,
+        tasks:[
+          {n:"Teil 1", desc:"Produktion – Meinungsäußerung verfassen: Einen Diskussionsbeitrag in einem Online-Forum (ca. 230 Wörter) schreiben. 4 Sprachfunktionen umsetzen (z.B. etwas erklären, Argumente anführen, anhand von Beispielen erläutern, Stellung nehmen)."},
+          {n:"Teil 2", desc:"Interaktion – (halb-)formelle Mitteilung verfassen: Eine E-Mail (ca. 120 Wörter) schreiben. 4 Sprachfunktionen umsetzen (z.B. auf ein Problem aufmerksam machen, Vorschläge machen, beschreiben, höflich Verständnis zeigen)."},
+        ],
+        tip:"Teil 1 (ca. 50 Min.): Nutzen Sie komplexe Satzkonstruktionen und C1-Wortschatz. Teil 2 (ca. 25 Min.): Formellen oder halbformellen Ton je nach Kontext wählen. Alle 4 Inhaltspunkte bearbeiten!",
+      },
+      {
+        name:"Sprechen",
+        icon:"info",
+        dur:"ca. 20 Min. pro Paar (+ Vorbereitungszeit)",
+        pts:100,
+        tasks:[
+          {n:"Teil 1", desc:"Produktion – Vor Publikum sprechen: Einen Vortrag zu einem gewählten Thema (mit Stichpunkten) halten. 4 Sprachfunktionen umsetzen. Anschließend Fragen der Prüfenden beantworten."},
+          {n:"Teil 2", desc:"Interaktion – Standpunkte vertreten und argumentieren: Eine freie Diskussion zu einer kontroversen Frage führen. Kurztext und 4 Stichpunkte als Hilfe. Eigene Position argumentieren und verteidigen."},
+        ],
+        tip:"Teil 1: Klare Struktur mit Einleitung–Hauptteil–Schluss. Fachvokabular und komplexe Satzstrukturen zeigen. Teil 2: Auf Gegenargumente reagieren: 'Ich sehe Ihren Punkt, jedoch...' / 'Dem möchte ich entgegenhalten, dass...'",
       },
     ],
   },
 };
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -1659,17 +1656,81 @@ export default function App() {
   const [timer, setTimer] = useState(900);
   const [timerOn, setTimerOn] = useState(false);
   const timerRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const oscillatorsRef = useRef([]);
   const [musicPref, setMusicPref] = useState(() => load().musicPref ?? "none");
   const [musicOn, setMusicOn] = useState(false);
-  const audioCtxRef = useRef(null);
-  const musicNodesRef = useRef([]);
   const [showMabrook, setShowMabrook] = useState(false);
   const [confetti, setConfetti] = useState([]);
-  const [firstPass, setFirstPass] = useState(false);
 
   const th = T[dark ? "dark" : "light"];
 
-  useEffect(() => { save({ loggedIn, dark, doneLessons, passedLevels, isAdmin }); }, [loggedIn, dark, doneLessons, passedLevels, isAdmin]);
+  useEffect(() => { save({ loggedIn, dark, doneLessons, passedLevels, isAdmin, musicPref }); }, [loggedIn, dark, doneLessons, passedLevels, isAdmin, musicPref]);
+
+  // ── MUSIK ENGINE (Web Audio API) ──────────────────────────────
+  const stopMusic = () => {
+    oscillatorsRef.current.forEach(n => { try { n.stop(); } catch(e){} });
+    oscillatorsRef.current = [];
+    if (audioCtxRef.current) { audioCtxRef.current.close(); audioCtxRef.current = null; }
+    setMusicOn(false);
+  };
+
+  const startMusic = (pref) => {
+    stopMusic();
+    if (pref === "none") return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      audioCtxRef.current = ctx;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.07, ctx.currentTime);
+      master.connect(ctx.destination);
+
+      const freqs = pref === "quran"
+        ? [220, 293.66, 329.63, 440, 391.99]
+        : [130.81, 196, 261.63, 329.63, 392];
+
+      freqs.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = pref === "quran" ? "sine" : "triangle";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2 + i * 0.5);
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.frequency.setValueAtTime(0.15 + i * 0.05, ctx.currentTime);
+        lfoGain.gain.setValueAtTime(0.3, ctx.currentTime);
+        lfo.connect(lfoGain);
+        lfoGain.connect(gain.gain);
+        lfo.start();
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start();
+        oscillatorsRef.current.push(osc, lfo);
+      });
+      setMusicOn(true);
+    } catch(e) { console.warn("Audio nicht verfügbar:", e); }
+  };
+
+  useEffect(() => { if (examDone) stopMusic(); }, [examDone]);
+  useEffect(() => { if (screen !== "exam") stopMusic(); }, [screen]);
+
+  // ── MABROOK KONFETTI ──────────────────────────────────────────
+  const triggerMabrook = () => {
+    const pieces = Array.from({length: 80}, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: -10 - Math.random() * 20,
+      color: ["#f59e0b","#10b981","#3b82f6","#ec4899","#8b5cf6","#ef4444","#fbbf24","#34d399"][i % 8],
+      size: 8 + Math.random() * 8,
+      speed: 2 + Math.random() * 3,
+      spin: Math.random() * 360,
+      drift: (Math.random() - 0.5) * 3,
+    }));
+    setConfetti(pieces);
+    setShowMabrook(true);
+    setTimeout(() => { setShowMabrook(false); setConfetti([]); }, 5500);
+  };
 
   useEffect(() => {
     if (timerOn && timer > 0) { timerRef.current = setInterval(() => setTimer(t => t - 1), 1000); }
@@ -1700,11 +1761,18 @@ export default function App() {
     const d = DIFFICULTIES.find(d => d.key === diff);
     setExamDiff(diff); setExamAns({}); setExamDone(false);
     setTimer(d.time); setTimerOn(true); setScreen("exam");
+    if (musicPref !== "none") setTimeout(() => startMusic(musicPref), 300);
   };
 
   const submitExam = () => {
     clearInterval(timerRef.current); setTimerOn(false); setExamDone(true);
-    if (examScore() >= passMark()) setPassedLevels(p => ({ ...p, [lvl]: examDiff }));
+    const passed = examScore() >= passMark();
+    if (passed) {
+      const wasAlreadyPassed = !!passedLevels[lvl];
+      setPassedLevels(p => ({ ...p, [lvl]: examDiff }));
+      if (!wasAlreadyPassed) triggerMabrook();
+    }
+    stopMusic();
   };
 
   const checkAns = (i) => {
@@ -1732,9 +1800,9 @@ export default function App() {
     fT();fX();return out;
   };
 
-  const btn = (bg,fg="#fff",extra={}) => ({background:bg,color:fg,border:"none",borderRadius:10,padding:"10px 18px",fontWeight:700,cursor:"pointer",fontSize:"0.9em",display:"flex",alignItems:"center",gap:6,...extra});
-  const card = {background:th.card,border:`1px solid ${th.border}`,borderRadius:16,boxShadow:th.shadow};
-  const inp = {background:th.input,border:`1.5px solid ${th.inputB}`,borderRadius:10,padding:"10px 14px",fontSize:"0.95em",color:th.text,outline:"none",width:"100%",boxSizing:"border-box"};
+  const btn = (bg,fg="#fff",extra={}) => ({background:bg,color:fg,border:"none",borderRadius:12,padding:"10px 20px",fontWeight:700,cursor:"pointer",fontSize:"0.9em",display:"flex",alignItems:"center",gap:7,transition:"transform 0.15s,box-shadow 0.15s",...extra});
+  const card = {background:th.card,border:`1px solid ${th.border}`,borderRadius:18,boxShadow:th.shadow,transition:"box-shadow 0.2s"};
+  const inp = {background:th.input,border:`1.5px solid ${th.inputB}`,borderRadius:12,padding:"11px 16px",fontSize:"0.95em",color:th.text,outline:"none",width:"100%",boxSizing:"border-box",transition:"border-color 0.2s"};
 
   // ══ LOGIN ══════════════════════════════════════════════════════
   if (!loggedIn) return (
@@ -1770,11 +1838,81 @@ export default function App() {
     const score = examScore(); const pass = score >= passMark();
     return (
       <div style={{minHeight:"100vh",background:th.bg,fontFamily:"system-ui,sans-serif",color:th.text}}>
+        {/* ── MABROOK OVERLAY ───────────────────────────────────── */}
+        {showMabrook && (
+          <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
+            {confetti.map(p => (
+              <div key={p.id} style={{
+                position:"absolute",
+                left:`${p.x}%`,
+                top:`${p.y}%`,
+                width:p.size,
+                height:p.size * 0.4,
+                background:p.color,
+                borderRadius:2,
+                transform:`rotate(${p.spin}deg)`,
+                animation:`fall ${p.speed}s ease-in forwards`,
+              }}/>
+            ))}
+            <div style={{
+              background:"linear-gradient(135deg,#1e1b4b,#4f46e5)",
+              borderRadius:24,
+              padding:"40px 56px",
+              textAlign:"center",
+              boxShadow:"0 24px 80px rgba(79,70,229,0.6)",
+              animation:"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards",
+              pointerEvents:"auto",
+            }}>
+              <div style={{fontSize:"4em",marginBottom:8}}>🎉</div>
+              <div style={{fontSize:"2.8em",fontWeight:900,color:"#fbbf24",letterSpacing:2,textShadow:"0 2px 20px rgba(251,191,36,0.5)"}}>مبروك</div>
+              <div style={{fontSize:"1.8em",fontWeight:800,color:"#fff",marginTop:4}}>Mabrook!</div>
+              <div style={{color:"#a5b4fc",marginTop:8,fontSize:"1em"}}>Du hast {lvl} zum ersten Mal bestanden! 🏆</div>
+              <div style={{marginTop:20,display:"flex",gap:8,justifyContent:"center",fontSize:"1.5em"}}>
+                {"⭐".repeat(5)}
+              </div>
+            </div>
+            <style>{`
+              @keyframes fall {
+                0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+              }
+              @keyframes popIn {
+                0%   { transform: scale(0.3); opacity: 0; }
+                100% { transform: scale(1);   opacity: 1; }
+              }
+            `}</style>
+          </div>
+        )}
+
+        {/* ── EXAM HEADER ───────────────────────────────────────── */}
         <div style={{background:examDone?(pass?"#16a34a":"#ef4444"):lc,color:"#fff",padding:"12px 20px",display:"flex",alignItems:"center",gap:12,position:"sticky",top:0,zIndex:50}}>
           {examDone&&<button onClick={()=>{setScreen("level");setTab("exam");setExamDiff(null);}} style={{...btn("rgba(255,255,255,0.2)"),padding:"7px 14px"}}>
             <Icon name="back" size={16} color="#fff"/> Zurück
           </button>}
           <span style={{fontWeight:800,flex:1}}>{lvl} Prüfung – {diff.label}</span>
+
+          {/* Musik-Toggle */}
+          {timerOn && !examDone && (
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              {MUSIC_OPTS.map(m => (
+                <button key={m.key} onClick={()=>{
+                  setMusicPref(m.key);
+                  if (m.key === "none") stopMusic();
+                  else startMusic(m.key);
+                }} style={{
+                  background: musicPref===m.key ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.12)",
+                  border: musicPref===m.key ? "2px solid #fff" : "2px solid transparent",
+                  borderRadius:8, padding:"5px 10px", cursor:"pointer",
+                  fontSize:"1em", color:"#fff", fontWeight:musicPref===m.key?800:400,
+                  transition:"all 0.2s",
+                }}>
+                  {m.icon}
+                </button>
+              ))}
+              {musicOn && <span style={{fontSize:"0.75em",opacity:0.8}}>♪ läuft</span>}
+            </div>
+          )}
+
           {!examDone&&<div style={{display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"6px 14px"}}>
             <Icon name="clock" size={16} color={timer<60?"#fef08a":"#fff"}/>
             <span style={{fontFamily:"monospace",fontWeight:800,color:timer<60?"#fef08a":"#fff"}}>{fmt(timer)}</span>
@@ -2072,7 +2210,7 @@ export default function App() {
               </div>
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                 {PRUEFUNGSTHEMEN[lvl].grammatik.map((g,i)=>(
-                  <span key={i} style={{background:"#8b5cf6"+"18",color:"#7c3aed",borderRadius:8,padding:"4px 12px",fontSize:"0.82em",fontWeight:600,border:"1px solid #8b5cf633"}}>{g}</span>
+                  <span key={i} style={{background:"#8b5cf618",color:"#7c3aed",borderRadius:8,padding:"4px 12px",fontSize:"0.82em",fontWeight:600,border:"1px solid #8b5cf633"}}>{g}</span>
                 ))}
               </div>
             </div>
@@ -2227,6 +2365,24 @@ export default function App() {
                 <Icon name="info" size={15} color="#d97706"/>
                 <span style={{color:"#d97706",fontSize:"0.87em",fontWeight:600}}>Empfehlung: Schließe zuerst alle Lektionen ab!</span>
               </div>}
+              {/* Musik-Voreinstellung */}
+              <div style={{...card,padding:16,marginBottom:14,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+                <span style={{fontWeight:700,fontSize:"0.88em",color:th.sub}}>🎵 Musik während der Prüfung:</span>
+                <div style={{display:"flex",gap:8}}>
+                  {MUSIC_OPTS.map(m=>(
+                    <button key={m.key} onClick={()=>setMusicPref(m.key)} style={{
+                      background: musicPref===m.key ? lc : th.input,
+                      color: musicPref===m.key ? "#fff" : th.text,
+                      border: `2px solid ${musicPref===m.key ? lc : th.border}`,
+                      borderRadius:10, padding:"8px 14px", cursor:"pointer",
+                      fontWeight:700, fontSize:"0.85em", display:"flex", gap:6, alignItems:"center",
+                      transition:"all 0.2s",
+                    }}>
+                      {m.icon} {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               {DIFFICULTIES.map(d=>(
                 <div key={d.key} onClick={()=>startExam(d.key)}
                   style={{...card,padding:"16px 18px",marginBottom:10,cursor:"pointer",display:"flex",alignItems:"center",gap:14,borderLeft:`4px solid ${d.color}`,transition:"transform 0.15s"}}
