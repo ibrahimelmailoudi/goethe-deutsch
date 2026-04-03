@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 const MUSIC_OPTS = [
   { key:"none",  label:"Kein Ton",  icon:"🔇" },
   { key:"music", label:"Musik",     icon:"🎵" },
-  { key:"quran", label:"Quran",     icon:"🕌" },
 ];
 
 const SECRET_CODE = "GOETHE2024";    // normaler User – Sperren aktiv
