@@ -1,70 +1,157 @@
-# Getting Started with Create React App
+# 📚 Goethe Deutsch
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**A1 bis C1 — Vollständiger Prüfungskurs**
 
-## Available Scripts
+Bereite dich auf deine offizielle Goethe-Institut-Prüfung vor – mit Lektionen, Übungen, Prüfungssimulationen und echten Prüfungsthemen.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🔑 Zugang
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Um die App zu nutzen, brauchst du einen **Zugangscode**.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Code | Zugang |
+|---|---|
+| `GOETHE2024` | Vollzugang zur App |
 
-### `npm test`
+Gib den Code auf der Login-Seite ein und drücke **Enter** oder klicke auf **Einloggen**.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🎓 Niveaustufen
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Die App deckt alle 5 Niveaus des Goethe-Instituts ab:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Niveau | Name | Farbe |
+|---|---|---|
+| A1 | Anfänger | 🟢 Grün |
+| A2 | Grundkenntnisse | 🔵 Blau |
+| B1 | Mittelstufe | 🟡 Orange |
+| B2 | Obere Mittelstufe | 🟣 Lila |
+| C1 | Fortgeschritten | 🔴 Rot |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+> **Hinweis:** Jedes Niveau wird erst freigeschaltet, nachdem du das vorherige bestanden hast.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📖 Lektionen
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Jedes Niveau hat **6 Lektionen** mit:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Vollständiger Grammatikerklärung mit Tabellen
+- Interaktiven Übungen mit sofortigem Feedback
+- Hinweisen bei falschen Antworten
+- Fortschrittsbalken pro Niveau
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Übersicht der Lektionsthemen:**
 
-## Learn More
+| Niveau | Themen (Beispiele) |
+|---|---|
+| A1 | Artikel, Pronomen, Verneinung, W-Fragen, Zahlen, Akkusativ |
+| A2 | Dativ, Trennbare Verben, Komparativ, Konjunktionen, Perfekt |
+| B1 | Präteritum, Adjektivdeklination, Modalverben, Konnektoren, Passiv |
+| B2 | Konjunktiv II, Relativsätze, Infinitivkonstruktionen, Nominalstil |
+| C1 | Konjunktiv I, Partizipialkonstruktionen, Funktionsverbgefüge, Modalpartikeln |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📝 Prüfungsmodus
 
-### Code Splitting
+Für jedes Niveau gibt es **4 Schwierigkeitsgrade**:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Grad | Zeit | Beschreibung |
+|---|---|---|
+| ⚡ Normal | 15 Min. | Grundlegende Fragen, ideal zur Wiederholung |
+| 🔥 Mittel | 12 Min. | Prüfungsnahes Niveau |
+| ⭐ Schwierig | 9 Min. | Komplexere Formulierungen |
+| 💀 Experte | 6 Min. | Sehr anspruchsvoll, minimale Zeit |
 
-### Analyzing the Bundle Size
+- **Multiple-Choice** Fragen (echtes Goethe-Format)
+- **60% Bestehensgrenze** – genau wie die echte Prüfung
+- **Timer** mit visuellem Fortschrittsbalken
+- **Auswertung** nach der Prüfung mit Lösungsanzeige
+- **🎵 Musik** während der Prüfung wählbar: Kein Ton / Musik / Quran
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🏛️ Prüfungsstruktur
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Die App zeigt die **offizielle Goethe-Institut Prüfungsstruktur** für jedes Niveau:
 
-### Advanced Configuration
+- Alle Prüfungsteile (Hören, Lesen, Schreiben, Sprechen)
+- Zeitangaben und Punktzahlen
+- Genaue Aufgabenbeschreibungen
+- Tipps pro Teil
+- **Direkter Link zum offiziellen Modellsatz (PDF)**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## ✏️ Prüfungsthemen
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Für jedes Niveau findest du alle echten Themen:
 
-### `npm run build` fails to minify
+- **Sprechen** – alle möglichen Diskussionsthemen
+- **Schreiben** – alle Aufgabentypen mit Beschreibung
+- **Lesen** – alle Aufgabenformate erklärt
+- **Grammatik** – wichtigste Grammatikpunkte für das Niveau
+- **Strategie-Tipp** – womit du in der Prüfung beginnen sollst
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🎬 Videos
+
+Empfohlene YouTube-Kanäle pro Niveau (alle kostenlos):
+
+| Kanal | Niveau |
+|---|---|
+| DW Deutsch lernen (Nicos Weg) | A1–C1 |
+| Learn German with Anja | A1–B1 |
+| Easy German | A2–C1 |
+| lingoni GERMAN | A1–B2 |
+| Deutsch mit Marija | B1–C2 |
+| Deutsch für Euch (Katja) | A1–B2 |
+
+---
+
+## 🎵 Musik während der Prüfung
+
+Du kannst während der Prüfung zwischen drei Optionen wählen:
+
+- 🔇 **Kein Ton** – Stille
+- 🎵 **Musik** – entspannende Hintergrundmusik
+- 🕌 **Quran** – ruhige Quran-Rezitation
+
+Die Einstellung wird gespeichert und beim nächsten Mal automatisch verwendet.
+
+---
+
+## 📊 Fortschritt
+
+Dein Lernfortschritt wird automatisch gespeichert:
+
+- Abgeschlossene Lektionen pro Niveau
+- Bestandene Prüfungen pro Niveau
+- Gesamtfortschritt auf der Startseite
+
+---
+
+## 🌙 Design
+
+Die App unterstützt zwei Designs:
+
+- **Dunkelmodus** (Standard bei Nacht)
+- **Hellmodus**
+
+Du kannst das Design jederzeit mit dem 🌙 / ☀️ Button wechseln.
+
+---
+
+## 🎉 Mabrook!
+
+Wenn du ein Niveau zum ersten Mal bestehst, erscheint eine besondere Überraschung:
+
+> **مبروك — Mabrook!**
+
+---
+
+*بإذن الله – Mit Gottes Erlaubnis*
