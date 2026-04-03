@@ -119,7 +119,6 @@ Du kannst während der Prüfung zwischen drei Optionen wählen:
 
 - 🔇 **Kein Ton** – Stille
 - 🎵 **Musik** – entspannende Hintergrundmusik
-- 🕌 **Quran** – ruhige Quran-Rezitation
 
 Die Einstellung wird gespeichert und beim nächsten Mal automatisch verwendet.
 
