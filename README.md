@@ -1,4 +1,4 @@
-# 📚 Goethe Deutsch
+# 📚 Goethe Deutsch — lernplattform
 
 **A1 bis C1 — Vollständiger Prüfungskurs**
 
