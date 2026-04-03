@@ -146,12 +146,4 @@ Du kannst das Design jederzeit mit dem 🌙 / ☀️ Button wechseln.
 
 ---
 
-## 🎉 Mabrook!
-
-Wenn du ein Niveau zum ersten Mal bestehst, erscheint eine besondere Überraschung:
-
-> **مبروك — Mabrook!**
-
----
-
 *بإذن الله – Mit Gottes Erlaubnis*
